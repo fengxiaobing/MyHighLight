@@ -60,12 +60,12 @@ public class MyView extends View{
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.clipRect(left,top,right,bottom, Region.Op.DIFFERENCE);
+        canvas.clipRect(pointX.x,pointX.y,pointY.x,pointY.y, Region.Op.DIFFERENCE);
         canvas.drawColor(Color.parseColor("#80000000"));
+
     }
 
 }
