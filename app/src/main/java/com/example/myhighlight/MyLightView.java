@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -66,8 +67,15 @@ public class MyLightView extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         //这里是通过 canvas.clipRect来实现的，你也可以通过canvas.clipPath()来实现高亮的各种形状
-        canvas.clipRect(pointX.x,pointX.y,pointY.x,pointY.y, Region.Op.DIFFERENCE);
+//        canvas.clipRect(pointX.x,pointX.y,pointY.x,pointY.y, Region.Op.DIFFERENCE);
+
+        //此处没有封装，只是抛砖引玉，你可以根据自己的需求进行拓展
+        Path path = new Path();
+        path.addOval(pointX.x,pointX.y,pointY.x,pointY.y,Path.Direction.CCW);
+        canvas.clipPath(path, Region.Op.DIFFERENCE);
+
         //两种绘制半透明的方式都可以
 //        canvas.drawColor(Color.parseColor("#80000000"));
         canvas.drawColor(maskColor);
