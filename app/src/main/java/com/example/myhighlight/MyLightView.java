@@ -1,6 +1,7 @@
 package com.example.myhighlight;
 
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -54,12 +55,15 @@ public class MyLightView extends FrameLayout {
     public MyLightView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         //设置画笔
+        //此处颜色为半透明颜色，也可以通过#80000000来设置
+        maskColor = Color.argb(0xCC, 0, 0, 0);
         maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         maskPaint.setColor(Color.BLUE);
         maskPaint.setStyle(Paint.Style.FILL);
         maskPaint.setAntiAlias(true);
-        //此处颜色为半透明颜色，也可以通过#80000000来设置
-        maskColor = Color.argb(0xCC, 0, 0, 0);
+        porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.XOR);
+
+
         setWillNotDraw(false);
         setClickable(true);
     }
@@ -67,18 +71,34 @@ public class MyLightView extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //第一种方式：通过设置画笔setXfermode的属性来实现
+        //要想使用 setXfermode() 正常绘制，必须使用离屏缓存 (Off-screen Buffer) 把内容绘制在额外的层上，
+        // 再把绘制好的内容贴回 View 中
+        int saved = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
+        canvas.drawColor(maskColor);
+        // 设置 Xfermode
+        maskPaint.setXfermode(porterDuffXfermode);
+        canvas.drawOval(pointX.x,pointX.y,pointY.x,pointY.y, maskPaint);
+        maskPaint.setTextSize(80);
+        canvas.drawText("终于成功了",400,400,maskPaint);
+        // 用完及时清除 Xfermode
+        maskPaint.setXfermode(null);
+        canvas.restoreToCount(saved);
 
+
+
+        //第二种方式：通过画布的裁剪来实现
         //这里是通过 canvas.clipRect来实现的，你也可以通过canvas.clipPath()来实现高亮的各种形状
 //        canvas.clipRect(pointX.x,pointX.y,pointY.x,pointY.y, Region.Op.DIFFERENCE);
 
         //此处没有封装，只是抛砖引玉，你可以根据自己的需求进行拓展
-        Path path = new Path();
-        path.addOval(pointX.x,pointX.y,pointY.x,pointY.y,Path.Direction.CCW);
-        canvas.clipPath(path, Region.Op.DIFFERENCE);
-
-        //两种绘制半透明的方式都可以
-//        canvas.drawColor(Color.parseColor("#80000000"));
-        canvas.drawColor(maskColor);
+//        Path path = new Path();
+//        path.addOval(pointX.x,pointX.y,pointY.x,pointY.y,Path.Direction.CCW);
+//        canvas.clipPath(path, Region.Op.DIFFERENCE);
+//
+//        //两种绘制半透明的方式都可以
+////        canvas.drawColor(Color.parseColor("#80000000"));
+//        canvas.drawColor(maskColor);
     }
 
 
