@@ -1,9 +1,8 @@
 # MyHighLight
 学完了自定义view之后，自己写了一个高亮的控件，欢迎指教
 先放一张效果图：
-![效果展示图](https://github.com/fengxiaobing/MyHighLight/blob/master/show.gif)
+![效果展示图](https://github.com/fengxiaobing/MyHighLight/blob/master/showgif.gif)
 
-PS:因为录制的gif动画无法显示点击哪个按钮，所以对按钮的背景颜色使用了selector.
 
 代码说明：
 
@@ -23,3 +22,6 @@ PS:因为录制的gif动画无法显示点击哪个按钮，所以对按钮的�
       
       参数三（text）：控件右上角的文字说明的内容
  （高亮消失）removeView()；
+
+
+注：因为高亮的实现可以有两种方式：画布的裁剪（Region.Op）实现和画笔的绘制（Xfermode来实现）。不过我个人觉得使用画笔来实现的可扩展性相对高一些。
